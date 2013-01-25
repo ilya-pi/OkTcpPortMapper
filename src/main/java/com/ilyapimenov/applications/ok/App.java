@@ -11,6 +11,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * @author Ilya Pimenov
+ */
 public class App {
 
     public static void main(String args[]) throws Exception {
@@ -45,6 +48,12 @@ public class App {
     }
 
     private void makeLove(final SocketChannel from, final SocketChannel to, final ThreadPoolExecutor executor) throws Exception {
+        /**
+         * currently it is thread-per connection; which is rather "ok", but bad on a bigger scale.
+         *
+         * i would guess it is better to use a single selector to handle a number of connections,
+         * in one thread, while storing info required to handle it nicely in the SelectionKey.attachement()
+         */
         executor.execute(new Runnable() {
             public void run() {
                 Selector selector = null;
