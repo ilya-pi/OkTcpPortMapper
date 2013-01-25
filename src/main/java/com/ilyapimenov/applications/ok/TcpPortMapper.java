@@ -1,11 +1,13 @@
 package com.ilyapimenov.applications.ok;
 
+import com.ilyapimenov.applications.ok.util.ConfParser;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -14,22 +16,24 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author Ilya Pimenov
  */
-public class App {
+public class TcpPortMapper {
 
     public static void main(String args[]) throws Exception {
-        new App().start();
+        new TcpPortMapper().start(ConfParser.parse(Thread.currentThread().getContextClassLoader().getResourceAsStream("proxy.properties")));
     }
 
-    public void start() throws Exception {
+    public void start(Map<Integer, InetSocketAddress> mappings) throws Exception {
 
         ThreadPoolExecutor executor = new ThreadPoolExecutor(2, 128, 10000, TimeUnit.MILLISECONDS, new LinkedBlockingQueue(1000));
 
         Selector selector = Selector.open();
 
-        ServerSocketChannel acceptingServerSocketChannel = ServerSocketChannel.open();
-        acceptingServerSocketChannel.configureBlocking(false);
-        acceptingServerSocketChannel.socket().bind(new InetSocketAddress(8080));
-        acceptingServerSocketChannel.register(selector, SelectionKey.OP_ACCEPT);
+        for (Integer port : mappings.keySet()) {
+            ServerSocketChannel portListener = ServerSocketChannel.open();
+            portListener.configureBlocking(false);
+            portListener.socket().bind(new InetSocketAddress(port));
+            portListener.register(selector, SelectionKey.OP_ACCEPT, port);
+        }
 
         while (true) {
             selector.select();
@@ -38,16 +42,17 @@ public class App {
                 SelectionKey selected = i.next();
                 i.remove();
                 if (selected.isAcceptable()) {
-                    ServerSocketChannel serverSocketChannel = (ServerSocketChannel) selected.channel();
-                    SocketChannel fromChannel = serverSocketChannel.accept();
-                    InetSocketAddress toAddres = new InetSocketAddress("www.ok.ru", 80);
-                    makeLove(fromChannel, SocketChannel.open(toAddres), executor);
+                    makeLove(
+                            ((ServerSocketChannel) selected.channel()).accept(),
+                            SocketChannel.open(mappings.get(selected.attachment())),
+                            executor
+                    );
                 }
             }
         }
     }
 
-    private void makeLove(final SocketChannel from, final SocketChannel to, final ThreadPoolExecutor executor) throws Exception {
+    private void makeLove(final SocketChannel from, final SocketChannel to, final ThreadPoolExecutor executor) {
         /**
          * currently it is thread-per connection; which is rather "ok", but bad on a bigger scale.
          *
@@ -113,7 +118,7 @@ public class App {
         });
     }
 
-    boolean forwardAll(SocketChannel from, SocketChannel to, ByteBuffer buff) throws Exception {
+    boolean forwardAll(SocketChannel from, SocketChannel to, ByteBuffer buff) throws IOException {
         buff.clear();
         while (true) {
             int read = from.read(buff);

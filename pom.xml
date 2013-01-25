@@ -30,6 +30,7 @@
             <timezone>+1</timezone>
         </developer>
     </developers>
+
     <build>
         <plugins>
             <plugin>
@@ -43,7 +44,6 @@
             </plugin>
         </plugins>
     </build>
-
 
     <dependencies>
     </dependencies>
