@@ -102,12 +102,10 @@ public class TcpPortMapper {
                             }
                         }
                     }
-                } catch (ClosedChannelException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    if (LOG.isWarnEnabled()){
+                        LOG.warn(String.format("Failed to make love between %s and %s for some reason", from.socket().getInetAddress(), to.socket().getInetAddress()), e);
+                    }
                 } finally {
                     if (selector != null) {
                         try {
