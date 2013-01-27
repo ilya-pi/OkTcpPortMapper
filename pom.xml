@@ -45,6 +45,37 @@
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>app</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>1.1.1</version>
+                        <executions>
+                            <!-- in a separate thread -->
+                            <execution>
+                                <phase>test</phase>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>com.ilyapimenov.applications.ok.TcpPortMapper</mainClass>
+                                    <arguments>
+                                        <!-- args are optional, default conf in the proxy.properties resource bundle -->
+                                        <!--<argument>~/Projects/OkTcpPortMapper/src/main/resources/proxy.properties</argument>-->
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <dependencies>
     </dependencies>
 

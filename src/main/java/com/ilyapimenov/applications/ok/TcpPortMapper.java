@@ -2,7 +2,9 @@ package com.ilyapimenov.applications.ok;
 
 import com.ilyapimenov.applications.ok.util.ConfParser;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
@@ -15,11 +17,14 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Ilya Pimenov
+ *         <p/>
+ *         Simple tcp port mapper implementation with java nio (thread per connection approach)
  */
 public class TcpPortMapper {
 
     public static void main(String args[]) throws Exception {
-        new TcpPortMapper().start(ConfParser.parse(Thread.currentThread().getContextClassLoader().getResourceAsStream("proxy.properties")));
+        InputStream confStream = (args.length >= 1 ? new FileInputStream(args[0]) : Thread.currentThread().getContextClassLoader().getResourceAsStream("proxy.properties"));
+        new TcpPortMapper().start(ConfParser.parse(confStream));
     }
 
     public void start(Map<Integer, InetSocketAddress> mappings) throws Exception {
@@ -54,10 +59,15 @@ public class TcpPortMapper {
 
     private void makeLove(final SocketChannel from, final SocketChannel to, final ThreadPoolExecutor executor) {
         /**
-         * currently it is thread-per connection; which is rather "ok", but bad on a bigger scale.
+         * currently it is thread-per connection; which is rather "ok", but bad under a high load.
          *
          * i would guess it is better to use a single selector to handle a number of connections,
          * in one thread, while storing info required to handle it nicely in the SelectionKey.attachement()
+         *
+         * ultimately cool is to switch from thread-per connection architecture under medium load,
+         * to a single thread per a number of connections under heavy-load, just like couch db par example does
+         *
+         * but this would require me way more then three hours in summary
          */
         executor.execute(new Runnable() {
             public void run() {

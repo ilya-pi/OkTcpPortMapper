@@ -1,5 +1,6 @@
 package com.ilyapimenov.applications.ok.util;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
@@ -23,7 +24,8 @@ import java.util.Properties;
 public class ConfParser {
 
     public static void main(String args[]) throws IOException {
-        System.out.println(parse(Thread.currentThread().getContextClassLoader().getResourceAsStream("proxy.properties")));
+        InputStream confStream = (args.length >= 1 ? new FileInputStream(args[0]) : Thread.currentThread().getContextClassLoader().getResourceAsStream("proxy.properties"));
+        System.out.println(parse(confStream));
     }
 
     public static Map<Integer, InetSocketAddress> parse(InputStream data) throws IOException {
