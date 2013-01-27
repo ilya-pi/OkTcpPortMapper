@@ -1,6 +1,8 @@
 package com.ilyapimenov.applications.ok;
 
 import com.ilyapimenov.applications.ok.util.ConfParser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -21,6 +23,8 @@ import java.util.concurrent.TimeUnit;
  *         Simple tcp port mapper implementation with java nio (thread per connection approach)
  */
 public class TcpPortMapper {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ConfParser.class);
 
     public static void main(String args[]) throws Exception {
         InputStream confStream = (args.length >= 1 ? new FileInputStream(args[0]) : Thread.currentThread().getContextClassLoader().getResourceAsStream("proxy.properties"));

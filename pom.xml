@@ -31,6 +31,11 @@
         </developer>
     </developers>
 
+    <properties>
+        <slf4j.version>1.6.2</slf4j.version>
+        <logback.version>0.9.29</logback.version>
+    </properties>
+
     <build>
         <plugins>
             <plugin>
@@ -78,8 +83,38 @@
 
     <dependencies>
 
-        <!-- Test deps-->
+        <!-- - - - - - - - -
+        |   L O G G I N G   |
+        \=================-->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>log4j-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
 
+        <!-- - - - - - - - -
+        | T E S T  D E P S |
+        \================-->
         <dependency>
             <groupId>commons-httpclient</groupId>
             <artifactId>commons-httpclient</artifactId>

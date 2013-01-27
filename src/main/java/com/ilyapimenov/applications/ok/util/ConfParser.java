@@ -1,5 +1,8 @@
 package com.ilyapimenov.applications.ok.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,9 +26,11 @@ import java.util.Properties;
  */
 public class ConfParser {
 
+    private static final Logger LOG = LoggerFactory.getLogger(ConfParser.class);
+
     public static void main(String args[]) throws IOException {
         InputStream confStream = (args.length >= 1 ? new FileInputStream(args[0]) : Thread.currentThread().getContextClassLoader().getResourceAsStream("proxy.properties"));
-        System.out.println(parse(confStream));
+        LOG.info(parse(confStream).toString());
     }
 
     public static Map<Integer, InetSocketAddress> parse(InputStream data) throws IOException {
@@ -40,7 +45,7 @@ public class ConfParser {
                 triads.put(keys[0], new ProxyConfTriad());
             }
             if (keys[1] == null || !ProxyProp.contains(keys[1])) {
-                System.out.println(String.format("Unrecognizable record %s", p));
+                LOG.warn(String.format("Unrecognizable record %s", p));
                 continue;
             }
             //note: in java 7 you can have switch statements on String
@@ -61,7 +66,7 @@ public class ConfParser {
         for (String key : triads.keySet()) {
             ProxyConfTriad t = triads.get(key);
             if (!t.isComplete()) {
-                System.out.println(String.format("Warning! Configuration for %s is incomplete, please check proxy.properties file", key));
+                LOG.warn(String.format("Configuration for %s is incomplete, please check proxy.properties file", key));
             } else {
                 result.put(t.port, new InetSocketAddress(t.host, t.hostPort));
             }
