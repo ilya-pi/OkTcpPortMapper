@@ -8,7 +8,7 @@ Tech Soup
 
 ### Building
 
-No extra moves are required, just go as you would with any other maven project.
+No extra moves required, just go as you would with any other maven project.
 
 To build —
 
@@ -16,16 +16,16 @@ To build —
 
 ### Running
 
-To simple ways to run it, first — go with the speacilly designated for that maven profile, like this:
+Two simple ways to launch it, first: go with the speacilly designated maven profile:
 
     mvn -Papp test
 
 > NOTE:
-> This would launch app with default configuration provided in the `proxy.properties`, can be found under
-> `./src/main/resources/proxy.properties`; args are specified in `pom.xml`, executed in a separate
+> This would launch app with default configuration provided in the `proxy.properties`, that can be found under
+> `./src/main/resources/proxy.properties`; args are specified in `pom.xml`, whole thing is executed in a separate
 > to maven build thread
 
-Second, build it and go manual:
+Second: build and go manual:
 
     mvn clean install
     cd target/
@@ -70,5 +70,6 @@ Please send me an [email](ilya.pimenov@gmail.com) with any feedback you have.
 Links
 -----
 
+ * [Problem as stated](https://github.com/ilya-pi/OkTcpPortMapper/blob/master/Problem.pdf)
  * [Odnoklassniki](http://www.ok.ru/)
  * [Supplementary OK-working spirit information](http://v.ok.ru/)
