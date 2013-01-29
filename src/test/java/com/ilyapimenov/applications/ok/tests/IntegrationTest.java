@@ -21,13 +21,23 @@ public class IntegrationTest {
 
     private static String confString =
             "ok.localPort = 8080\n" +
-                    "ok.remoteHost = www.ya.ru\n" +
+                    "ok.remoteHost = www.ok.ru\n" +
                     "rock.remoteHost = www.odnoklassniki.ru\n" +
                     "ok.remotePort = 80\n";
 
     @Before
     public void setup() throws Exception {
-        new TcpPortMapper().start(ConfParser.parse(new ByteArrayInputStream(confString.getBytes())));
+        new Thread() {
+            @Override
+            public void run() {
+                try {
+                    new TcpPortMapper().start(ConfParser.parse(new ByteArrayInputStream(confString.getBytes())));
+                } catch (Exception e) {
+                    /* ignore */
+                }
+            }
+        }.start();
+        Thread.sleep(1000);
     }
 
     @Test
@@ -36,7 +46,7 @@ public class IntegrationTest {
         GetMethod getMethod = new GetMethod("http://localhost:8080");
         httpClient.executeMethod(getMethod);
         //todo refine, check for a better trigger once internet is back again
-        assertTrue(getMethod.getResponseBodyAsString().contains("ok.ru"));
+        assertTrue(getMethod.getResponseBodyAsString().contains("Одноклассники"));
     }
 
 }
