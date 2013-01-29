@@ -45,8 +45,8 @@ public class IntegrationTest {
         HttpClient httpClient = new HttpClient();
         GetMethod getMethod = new GetMethod("http://localhost:8080");
         httpClient.executeMethod(getMethod);
-        //todo refine, check for a better trigger once internet is back again
-        assertTrue(getMethod.getResponseBodyAsString().contains("Одноклассники"));
+        System.out.println(getMethod.getResponseBodyAsString());
+        assertTrue(getMethod.getResponseBodyAsString().contains("odnoklassniki"));
     }
 
 }
